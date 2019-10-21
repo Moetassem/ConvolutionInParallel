@@ -1,1 +1,216 @@
-﻿  Lab2.vcxproj -> C:\Users\mabdel63\source\repos\Lab2\x64\Debug\Lab2.exe
+﻿  Compiling CUDA source file kernel.cu...
+  
+  C:\Users\mabdel63\source\repos\Lab2>"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.1\bin\nvcc.exe" -gencode=arch=compute_35,code=\"sm_35,compute_35\" --use-local-env -ccbin "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.22.27905\bin\HostX86\x64" -x cu  -I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.1\include" -I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.1\include"  -G   --keep-dir x64\Debug -maxrregcount=0  --machine 64 --compile -cudart static  -g   -DWIN32 -DWIN64 -D_DEBUG -D_CONSOLE -D_MBCS -Xcompiler "/EHsc /W3 /nologo /Od /Fdx64\Debug\vc142.pdb /FS /Zi /RTC1 /MDd " -o x64\Debug\kernel.cu.obj "C:\Users\mabdel63\source\repos\Lab2\kernel.cu" 
+C:/Users/mabdel63/source/repos/Lab2/kernel.cu(103): warning : conversion from a string literal to "char *" is deprecated
+  
+C:/Users/mabdel63/source/repos/Lab2/kernel.cu(104): warning : conversion from a string literal to "char *" is deprecated
+  
+C:/Users/mabdel63/source/repos/Lab2/kernel.cu(154): warning : transfer of control bypasses initialization of:
+              variable "sizeOfArray"
+  (157): here
+              variable "sizeOfOutputArray"
+  (158): here
+              variable "numBlocks"
+  (234): here
+              variable "threadsPerBlock"
+  (235): here
+              variable "wMs"
+  (236): here
+  
+C:/Users/mabdel63/source/repos/Lab2/kernel.cu(166): warning : transfer of control bypasses initialization of:
+              variable "numBlocks"
+  (234): here
+              variable "threadsPerBlock"
+  (235): here
+              variable "wMs"
+  (236): here
+  
+C:/Users/mabdel63/source/repos/Lab2/kernel.cu(172): warning : transfer of control bypasses initialization of:
+              variable "numBlocks"
+  (234): here
+              variable "threadsPerBlock"
+  (235): here
+              variable "wMs"
+  (236): here
+  
+C:/Users/mabdel63/source/repos/Lab2/kernel.cu(183): warning : transfer of control bypasses initialization of:
+              variable "numBlocks"
+  (234): here
+              variable "threadsPerBlock"
+  (235): here
+              variable "wMs"
+  (236): here
+  
+C:/Users/mabdel63/source/repos/Lab2/kernel.cu(189): warning : transfer of control bypasses initialization of:
+              variable "numBlocks"
+  (234): here
+              variable "threadsPerBlock"
+  (235): here
+              variable "wMs"
+  (236): here
+  
+C:/Users/mabdel63/source/repos/Lab2/kernel.cu(195): warning : transfer of control bypasses initialization of:
+              variable "numBlocks"
+  (234): here
+              variable "threadsPerBlock"
+  (235): here
+              variable "wMs"
+  (236): here
+  
+C:/Users/mabdel63/source/repos/Lab2/kernel.cu(201): warning : transfer of control bypasses initialization of:
+              variable "numBlocks"
+  (234): here
+              variable "threadsPerBlock"
+  (235): here
+              variable "wMs"
+  (236): here
+  
+C:/Users/mabdel63/source/repos/Lab2/kernel.cu(207): warning : transfer of control bypasses initialization of:
+              variable "numBlocks"
+  (234): here
+              variable "threadsPerBlock"
+  (235): here
+              variable "wMs"
+  (236): here
+  
+C:/Users/mabdel63/source/repos/Lab2/kernel.cu(213): warning : transfer of control bypasses initialization of:
+              variable "numBlocks"
+  (234): here
+              variable "threadsPerBlock"
+  (235): here
+              variable "wMs"
+  (236): here
+  
+C:/Users/mabdel63/source/repos/Lab2/kernel.cu(219): warning : transfer of control bypasses initialization of:
+              variable "numBlocks"
+  (234): here
+              variable "threadsPerBlock"
+  (235): here
+              variable "wMs"
+  (236): here
+  
+C:/Users/mabdel63/source/repos/Lab2/kernel.cu(225): warning : transfer of control bypasses initialization of:
+              variable "numBlocks"
+  (234): here
+              variable "threadsPerBlock"
+  (235): here
+              variable "wMs"
+  (236): here
+  
+C:/Users/mabdel63/source/repos/Lab2/kernel.cu(231): warning : transfer of control bypasses initialization of:
+              variable "numBlocks"
+  (234): here
+              variable "threadsPerBlock"
+  (235): here
+              variable "wMs"
+  (236): here
+  
+C:/Users/mabdel63/source/repos/Lab2/kernel.cu(103): warning : conversion from a string literal to "char *" is deprecated
+  
+C:/Users/mabdel63/source/repos/Lab2/kernel.cu(104): warning : conversion from a string literal to "char *" is deprecated
+  
+C:/Users/mabdel63/source/repos/Lab2/kernel.cu(154): warning : transfer of control bypasses initialization of:
+              variable "sizeOfArray"
+  (157): here
+              variable "sizeOfOutputArray"
+  (158): here
+              variable "numBlocks"
+  (234): here
+              variable "threadsPerBlock"
+  (235): here
+              variable "wMs"
+  (236): here
+  
+C:/Users/mabdel63/source/repos/Lab2/kernel.cu(166): warning : transfer of control bypasses initialization of:
+              variable "numBlocks"
+  (234): here
+              variable "threadsPerBlock"
+  (235): here
+              variable "wMs"
+  (236): here
+  
+C:/Users/mabdel63/source/repos/Lab2/kernel.cu(172): warning : transfer of control bypasses initialization of:
+              variable "numBlocks"
+  (234): here
+              variable "threadsPerBlock"
+  (235): here
+              variable "wMs"
+  (236): here
+  
+C:/Users/mabdel63/source/repos/Lab2/kernel.cu(183): warning : transfer of control bypasses initialization of:
+              variable "numBlocks"
+  (234): here
+              variable "threadsPerBlock"
+  (235): here
+              variable "wMs"
+  (236): here
+  
+C:/Users/mabdel63/source/repos/Lab2/kernel.cu(189): warning : transfer of control bypasses initialization of:
+              variable "numBlocks"
+  (234): here
+              variable "threadsPerBlock"
+  (235): here
+              variable "wMs"
+  (236): here
+  
+C:/Users/mabdel63/source/repos/Lab2/kernel.cu(195): warning : transfer of control bypasses initialization of:
+              variable "numBlocks"
+  (234): here
+              variable "threadsPerBlock"
+  (235): here
+              variable "wMs"
+  (236): here
+  
+C:/Users/mabdel63/source/repos/Lab2/kernel.cu(201): warning : transfer of control bypasses initialization of:
+              variable "numBlocks"
+  (234): here
+              variable "threadsPerBlock"
+  (235): here
+              variable "wMs"
+  (236): here
+  
+C:/Users/mabdel63/source/repos/Lab2/kernel.cu(207): warning : transfer of control bypasses initialization of:
+              variable "numBlocks"
+  (234): here
+              variable "threadsPerBlock"
+  (235): here
+              variable "wMs"
+  (236): here
+  
+C:/Users/mabdel63/source/repos/Lab2/kernel.cu(213): warning : transfer of control bypasses initialization of:
+              variable "numBlocks"
+  (234): here
+              variable "threadsPerBlock"
+  (235): here
+              variable "wMs"
+  (236): here
+  
+C:/Users/mabdel63/source/repos/Lab2/kernel.cu(219): warning : transfer of control bypasses initialization of:
+              variable "numBlocks"
+  (234): here
+              variable "threadsPerBlock"
+  (235): here
+              variable "wMs"
+  (236): here
+  
+C:/Users/mabdel63/source/repos/Lab2/kernel.cu(225): warning : transfer of control bypasses initialization of:
+              variable "numBlocks"
+  (234): here
+              variable "threadsPerBlock"
+  (235): here
+              variable "wMs"
+  (236): here
+  
+C:/Users/mabdel63/source/repos/Lab2/kernel.cu(231): warning : transfer of control bypasses initialization of:
+              variable "numBlocks"
+  (234): here
+              variable "threadsPerBlock"
+  (235): here
+              variable "wMs"
+  (236): here
+  
+  kernel.cu
+C:/Users/mabdel63/source/repos/Lab2/kernel.cu(279): warning C4533: initialization of 'wMs' is skipped by 'goto Error'
+  C:/Users/mabdel63/source/repos/Lab2/kernel.cu(236): note: see declaration of 'wMs'
+  C:/Users/mabdel63/source/repos/Lab2/kernel.cu(279): note: see declaration of 'Error'
+  Lab2.vcxproj -> C:\Users\mabdel63\source\repos\Lab2\x64\Debug\Lab2.exe

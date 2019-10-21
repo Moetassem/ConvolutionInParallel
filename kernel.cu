@@ -17,16 +17,21 @@ constexpr auto MAX_NUMBER_THREADS = 1024;
 
 cudaError_t imageConvolutionWithCuda(int numOfThreads, int weightBoxDim, char* inputImageName, char* outputImageName);
 
-__global__ void convolutionKernel(unsigned char* inArray, unsigned char* outArray, float* wM, int outputQuarterSize, int numOfThreads, int width, int boxDim)
+__global__ void convolutionKernel(unsigned char* inArray, unsigned char* outArray, weightMats &wMs, int outputQuarterSize, int numOfThreads, int width, int boxDim)
 {
 	for (int i = 0; i < outputQuarterSize / numOfThreads; i++) {
 		int j = (threadIdx.x + numOfThreads * i) + (blockIdx.x * numOfThreads);
-		int k = j + width * (j / width - (boxDim - 1));
+		int k = j + width * (j / (width - (boxDim - 1)));
 
+		//if (boxDim == 3) {
+		//	outArray[j] = inArray[k] + inArray[k + 1] + inArray[k + 2]
+		//		+ inArray[k + width] + inArray[k + width + 1] + inArray[k + width + 2]
+		//		+ inArray[k + (2 * width)] + inArray[k + (2 * width) + 1] + inArray[k + (2 * width) + 2];
+		//}
 		if (boxDim == 3) {
-			outArray[j] = inArray[k] * wM[0] + inArray[k + 1] * wM[1] + inArray[k + 2] * wM[2]
-						+ inArray[k + width] * wM[3] + inArray[k + width + 1] * wM[4] + inArray[k + width + 2] * wM[5]
-						+ inArray[k + (2 * width)] * wM[6] + inArray[k + (2 * width) + 1] * wM[7] + inArray[k + (2 * width) + 2] * wM[8];
+			outArray[j] = inArray[k] * 1 + inArray[k + 1] * 2 + inArray[k + 2] * -1
+						+ inArray[k + width] * 2 + inArray[k + width + 1] * 0.25 + inArray[k + width + 2] * -2
+						+ inArray[k + (2 * width)] * 1 + inArray[k + (2 * width) + 1] * -2 + inArray[k + (2 * width) + 2] * -1;
 		}
 		/*else if (boxDim == 5) {
 			outArray[j] = inArray[k] * wM[0] + inArray[k + 1] * wM[1] + inArray[k + 2] * wM[2] + inArray[k + 3] * wM[3] + inArray[k + 4] * wM[4]
@@ -138,7 +143,7 @@ int main(int argc, char* argv[])
 
 cudaError_t imageConvolutionWithCuda(int numOfThreads, int weightBoxDim, char* inputImageName, char* outputImageName) {
 	cudaError_t cudaStatus = cudaError_t::cudaErrorDeviceUninitilialized;
-	GpuTimer gpuTimer; // Struct for timing the GPU
+	//GpuTimer gpuTimer; // Struct for timing the GPU
 	unsigned char* inputImage = nullptr;
 	unsigned width, height = 0;
 
@@ -226,25 +231,24 @@ cudaError_t imageConvolutionWithCuda(int numOfThreads, int weightBoxDim, char* i
 		goto Error;
 	}
 
-	float w[9] = {1,2,-1,2,0.25,-2,1,-2,-1};
 	int numBlocks = ((numOfThreads + (MAX_NUMBER_THREADS - 1)) / MAX_NUMBER_THREADS);
 	int threadsPerBlock = ((numOfThreads + (numBlocks - 1)) / numBlocks);
-
+	weightMats wMs;
 	/*************************************** Parrallel Part of Execution **********************************************/
-	gpuTimer.Start();
+	//gpuTimer.Start();
 	pixelsSplitIntoQuarters << <numBlocks, threadsPerBlock >> > (dev_RGBAArray, dev_RArray, dev_GArray, dev_BArray, dev_AArray, sizeOfArray / 4, threadsPerBlock);
 
 	//Convolution of each array r,g,b,a
-	convolutionKernel << <numBlocks, threadsPerBlock >> > (dev_RArray, dev_outRArray, &w[0], sizeOfOutputArray / 4, threadsPerBlock, width, weightBoxDim);
+	convolutionKernel << <numBlocks, threadsPerBlock >> > (dev_RArray, dev_outRArray, wMs, sizeOfOutputArray / 4, threadsPerBlock, width, weightBoxDim);
 
-	convolutionKernel << <numBlocks, threadsPerBlock >> > (dev_GArray, dev_outGArray, &w[0], sizeOfOutputArray / 4, threadsPerBlock, width, weightBoxDim);
+	convolutionKernel << <numBlocks, threadsPerBlock >> > (dev_GArray, dev_outGArray, wMs, sizeOfOutputArray / 4, threadsPerBlock, width, weightBoxDim);
 
-	convolutionKernel << <numBlocks, threadsPerBlock >> > (dev_BArray, dev_outBArray, &w[0], sizeOfOutputArray / 4, threadsPerBlock, width, weightBoxDim);
+	convolutionKernel << <numBlocks, threadsPerBlock >> > (dev_BArray, dev_outBArray, wMs, sizeOfOutputArray / 4, threadsPerBlock, width, weightBoxDim);
 
-	convolutionKernel << <numBlocks, threadsPerBlock >> > (dev_AArray, dev_outAArray, &w[0], sizeOfOutputArray / 4, threadsPerBlock, width, weightBoxDim);
+	convolutionKernel << <numBlocks, threadsPerBlock >> > (dev_AArray, dev_outAArray, wMs, sizeOfOutputArray / 4, threadsPerBlock, width, weightBoxDim);
 
 	pixelsMerge << <numBlocks, threadsPerBlock >> > (dev_outRArray, dev_outGArray, dev_outBArray, dev_outAArray, dev_outArray, sizeOfArray / 4, threadsPerBlock);
-	gpuTimer.Stop();
+	//gpuTimer.Stop();
 	/*****************************************************************************************************************/
 	//printf("-- Number of Threads: %d -- Execution Time (ms): %g \n", numOfThreads, gpuTimer.Elapsed());
 
