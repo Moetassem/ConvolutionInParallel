@@ -78,6 +78,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <CudaCompile Include="kernel.cu" />
+    <CudaCompile Include="lodepng.cu" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="gputimer.h" />
+    <ClInclude Include="lodepng.h" />
+    <ClInclude Include="wm.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
