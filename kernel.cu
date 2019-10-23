@@ -95,10 +95,10 @@ __global__ void pixelsMerge(unsigned char* outrArray, unsigned char* outgArray, 
 
 int main(int argc, char* argv[])
 {
-	char* inputImgName = "testInput.png";
-	char* outImgName = "testOutput.png";
+	char* inputImgName = "test.png";
+	char* outImgName = "test_convolve.png";
 	int weightMatDim = 3;
-	int numOfThreads = 1024;
+	int numOfThreads = 2000;
 
 	/*if (argc != 6 || argv[1] == NULL || argv[2] == NULL || argv[3] == NULL || argv[4] == NULL ||
 		argv[1] == "-h" || argv[1] == "--help" || argv[1] == "--h") {
