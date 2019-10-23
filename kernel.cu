@@ -21,27 +21,27 @@ __global__ void convolutionKernel(unsigned char* inArray, unsigned char* outArra
 {
 	for (int i = 0; i < outputSizePerChannel / numOfThreads; i++) {
 		int j = (threadIdx.x + numOfThreads * i) + (blockIdx.x * numOfThreads);
-		int k = j + (boxDim-1) * (j/((((j/width)+1)*width)-(boxDim-1)));
+		int k = j + (boxDim-1) * (j/(width-(boxDim-1)));
 
 		if (boxDim == 3) {
-			outArray[j] = inArray[k] * wMs[0] + inArray[k + 1] * wMs[1] + inArray[k + 2] * wMs[2]
+			outArray[j] = (inArray[k] * wMs[0] + inArray[k + 1] * wMs[1] + inArray[k + 2] * wMs[2]
 						+ inArray[k + width] * wMs[3] + inArray[k + width + 1] * wMs[4] + inArray[k + width + 2] * wMs[5]
-						+ inArray[k + (2 * width)] * wMs[6] + inArray[k + (2 * width) + 1] * wMs[7] + inArray[k + (2 * width) + 2] * wMs[8];
+						+ inArray[k + (2 * width)] * wMs[6] + inArray[k + (2 * width) + 1] * wMs[7] + inArray[k + (2 * width) + 2] * wMs[8]);
 		}
-		/*else if (boxDim == 5) {
-			outArray[j] = inArray[k] * wM[0] + inArray[k + 1] * wM[1] + inArray[k + 2] * wM[2] + inArray[k + 3] * wM[3] + inArray[k + 4] * wM[4]
-						+ inArray[k + width] * wM[5] + inArray[k + width + 1] * wM[6] + inArray[k + width + 2] * wM[7] + inArray[k + width + 3] * wM[8] + inArray[k + width + 4] * wM[9]
-						+ inArray[k + (2 * width)] * wM[10] + inArray[k + (2 * width) + 1] * wM[11] + inArray[k + (2 * width) + 2] * wM[12] + inArray[k + (2 * width) + 3] * wM[13] + inArray[k + (2 * width) + 4] * wM[14]
-						+ inArray[k + (3 * width)] * wM[15] + inArray[k + (3 * width) + 1] * wM[16] + inArray[k + (3 * width) + 2] * wM[17] + inArray[k + (3 * width) + 3] * wM[18] + inArray[k + (3 * width) + 4] * wM[19]
-						+ inArray[k + (4 * width)] * wM[20] + inArray[k + (4 * width) + 1] * wM[21] + inArray[k + (4 * width) + 2] * wM[22] + inArray[k + (4 * width) + 3] * wM[23] + inArray[k + (4 * width) + 4] * wM[24];
-		}*/
-		/*else if (boxDim == 7) {
-			outArray[j] = inArray[k] * wM[0] + inArray[k + 1] * wM[1] + inArray[k + 2] * wM[2] + inArray[k + 3] * wM[3] + inArray[k + 4] * wM[4]
-				+ inArray[k + width] * wM[5] + inArray[k + width + 1] * wM[6] + inArray[k + width + 2] * wM[7] + inArray[k + width + 3] * wM[8] + inArray[k + width + 4] * wM[9]
-				+ inArray[k + (2 * width)] * wM[10] + inArray[k + (2 * width) + 1] * wM[11] + inArray[k + (2 * width) + 2] * wM[12] + inArray[k + (2 * width) + 3] * wM[13] + inArray[k + (2 * width) + 4] * wM[14]
-				+ inArray[k + (3 * width)] * wM[15] + inArray[k + (3 * width) + 1] * wM[16] + inArray[k + (3 * width) + 2] * wM[17] + inArray[k + (3 * width) + 3] * wM[18] + inArray[k + (3 * width) + 4] * wM[19]
-				+ inArray[k + (4 * width)] * wM[20] + inArray[k + (4 * width) + 1] * wM[21] + inArray[k + (4 * width) + 2] * wM[22] + inArray[k + (4 * width) + 3] * wM[23] + inArray[k + (4 * width) + 4] * wM[24];
-		}*/
+		else if (boxDim == 5) {
+			outArray[j] = inArray[k] * wMs[0] + inArray[k + 1] * wMs[1] + inArray[k + 2] * wMs[2] + inArray[k + 3] * wMs[3] + inArray[k + 4] * wMs[4]
+						+ inArray[k + width] * wMs[5] + inArray[k + width + 1] * wMs[6] + inArray[k + width + 2] * wMs[7] + inArray[k + width + 3] * wMs[8] + inArray[k + width + 4] * wMs[9]
+						+ inArray[k + (2 * width)] * wMs[10] + inArray[k + (2 * width) + 1] * wMs[11] + inArray[k + (2 * width) + 2] * wMs[12] + inArray[k + (2 * width) + 3] * wMs[13] + inArray[k + (2 * width) + 4] * wMs[14]
+						+ inArray[k + (3 * width)] * wMs[15] + inArray[k + (3 * width) + 1] * wMs[16] + inArray[k + (3 * width) + 2] * wMs[17] + inArray[k + (3 * width) + 3] * wMs[18] + inArray[k + (3 * width) + 4] * wMs[19]
+						+ inArray[k + (4 * width)] * wMs[20] + inArray[k + (4 * width) + 1] * wMs[21] + inArray[k + (4 * width) + 2] * wMs[22] + inArray[k + (4 * width) + 3] * wMs[23] + inArray[k + (4 * width) + 4] * wMs[24];
+		}
+		//else if (boxDim == 7) {
+		//	outArray[j] = inArray[k] * wM[0] + inArray[k + 1] * wM[1] + inArray[k + 2] * wM[2] + inArray[k + 3] * wM[3] + inArray[k + 4] * wM[4]
+		//		+ inArray[k + width] * wM[5] + inArray[k + width + 1] * wM[6] + inArray[k + width + 2] * wM[7] + inArray[k + width + 3] * wM[8] + inArray[k + width + 4] * wM[9]
+		//		+ inArray[k + (2 * width)] * wM[10] + inArray[k + (2 * width) + 1] * wM[11] + inArray[k + (2 * width) + 2] * wM[12] + inArray[k + (2 * width) + 3] * wM[13] + inArray[k + (2 * width) + 4] * wM[14]
+		//		+ inArray[k + (3 * width)] * wM[15] + inArray[k + (3 * width) + 1] * wM[16] + inArray[k + (3 * width) + 2] * wM[17] + inArray[k + (3 * width) + 3] * wM[18] + inArray[k + (3 * width) + 4] * wM[19]
+		//		+ inArray[k + (4 * width)] * wM[20] + inArray[k + (4 * width) + 1] * wM[21] + inArray[k + (4 * width) + 2] * wM[22] + inArray[k + (4 * width) + 3] * wM[23] + inArray[k + (4 * width) + 4] * wM[24];
+		//}
 	}
 }
 
@@ -67,9 +67,9 @@ __global__ void convolutionKernel(unsigned char* inArray, unsigned char* outArra
 //}
 
 __global__ void pixelsSplitIntoQuarters(unsigned char* rgbaArray, unsigned char* rArray, unsigned char* gArray, unsigned char* bArray, unsigned char* aArray,
-	int sizeofQuarterPixels, int numOfThreads)
+	int sizeofPixelsPerInputChannel, int numOfThreads)
 {
-	for (int i = 0; i < (sizeofQuarterPixels) / numOfThreads; i++) {
+	for (int i = 0; i < (sizeofPixelsPerInputChannel) / numOfThreads; i++) {
 		int j = (threadIdx.x + numOfThreads * i) + (blockIdx.x * numOfThreads);
 		int k = j * 4;
 
@@ -81,8 +81,8 @@ __global__ void pixelsSplitIntoQuarters(unsigned char* rgbaArray, unsigned char*
 }
 
 __global__ void pixelsMerge(unsigned char* outrArray, unsigned char* outgArray, unsigned char* outbArray, unsigned char* outaArray, unsigned char* outfinalArray,
-	int sizeofQuarterPixels, int numOfThreads) {
-	for (int i = 0; i < ((sizeofQuarterPixels / 4) / numOfThreads); i++) {
+	int sizeofPixelsPerOutputChannel, int numOfThreads) {
+	for (int i = 0; i < (sizeofPixelsPerOutputChannel / numOfThreads); i++) {
 		int j = (threadIdx.x + numOfThreads * i) + (blockIdx.x * numOfThreads);
 		int k = 4 * j;
 
@@ -98,7 +98,7 @@ int main(int argc, char* argv[])
 	char* inputImgName = "testInput.png";
 	char* outImgName = "testOutput.png";
 	int weightMatDim = 3;
-	int numOfThreads = 256;
+	int numOfThreads = 1024;
 
 	/*if (argc != 6 || argv[1] == NULL || argv[2] == NULL || argv[3] == NULL || argv[4] == NULL ||
 		argv[1] == "-h" || argv[1] == "--help" || argv[1] == "--h") {
@@ -235,7 +235,7 @@ cudaError_t imageConvolutionWithCuda(int numOfThreads, int weightBoxDim, char* i
 
 	for (int i = 0; i < (weightBoxDim); i++) {
 		for (int j = 0; j < (weightBoxDim); j++) {
-			dev_wMs[i + j] = w[i][j];
+			dev_wMs[(i * weightBoxDim) + j] = w[i][j];
 		}
 	}
 
@@ -254,7 +254,7 @@ cudaError_t imageConvolutionWithCuda(int numOfThreads, int weightBoxDim, char* i
 
 	convolutionKernel << <numBlocks, threadsPerBlock >> > (dev_AArray, dev_outAArray, dev_wMs, sizeOfOutputArray / 4, threadsPerBlock, width, weightBoxDim);
 
-	pixelsMerge << <numBlocks, threadsPerBlock >> > (dev_outRArray, dev_outGArray, dev_outBArray, dev_outAArray, dev_outArray, sizeOfArray/4, threadsPerBlock);
+	pixelsMerge << <numBlocks, threadsPerBlock >> > (dev_outRArray, dev_outGArray, dev_outBArray, dev_outAArray, dev_outArray, sizeOfOutputArray/4, threadsPerBlock);
 	//gpuTimer.Stop();
 	/*****************************************************************************************************************/
 	//printf("-- Number of Threads: %d -- Execution Time (ms): %g \n", numOfThreads, gpuTimer.Elapsed());
