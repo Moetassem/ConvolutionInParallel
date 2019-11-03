@@ -11,12 +11,13 @@
 #include <vector>
 #include <algorithm>
 
-#define MAX_NUMBER_THREADS (1024)
+#define MAX_NUMBER_THREADS 1024
 
 using namespace std;
 
 cudaError_t imageConvolutionWithCuda(int numOfThreads, int weightBoxDim, char* inputImageName, char* outputImageName);
 
+// convolutionKernel runs the convolution function on each RGB array
 __global__ void convolutionKernel(unsigned char* inArray, float* outArray, float* wMs, int outputSizePerChannel, int numOfThreads, int width, int boxDim)
 {
 	for (int i = 0; i < outputSizePerChannel / numOfThreads; i++) {
@@ -43,10 +44,6 @@ __global__ void convolutionKernel(unsigned char* inArray, float* outArray, float
 				+ inArray[k + (5 * width)] * wMs[35] + inArray[k + (5 * width) + 1] * wMs[36] + inArray[k + (5 * width) + 2] * wMs[37] + inArray[k + (5 * width) + 3] * wMs[38] + inArray[k + (5 * width) + 4] * wMs[39] + inArray[k + (5 * width) + 5] * wMs[40] + inArray[k + (5 * width) + 6] * wMs[41]
 				+ inArray[k + (6 * width)] * wMs[42] + inArray[k + (6 * width) + 1] * wMs[43] + inArray[k + (6 * width) + 2] * wMs[44] + inArray[k + (6 * width) + 3] * wMs[45] + inArray[k + (6 * width) + 4] * wMs[46] + inArray[k + (6 * width) + 5] * wMs[47] + inArray[k + (6 * width) + 6] * wMs[48]);
 		}
-		else {
-			//outArray[j] = (float)inArray[j]; // not happening
-			printf("you chose unsupported weight matrix dimension");
-		}
 
 		if (outArray[j] < 0) {
 			outArray[j] = 0;
@@ -57,22 +54,7 @@ __global__ void convolutionKernel(unsigned char* inArray, float* outArray, float
 	}
 }
 
-//__global__ void pixelsCorrection(unsigned char* inArray, int sizeofInput, int numOfThreads)
-//{
-//	for (int i = 0; i < sizeofInput / numOfThreads; i++) {
-//		int	k = (numOfThreads * i + threadIdx.x) + (blockIdx.x * numOfThreads);
-//		if (inArray[k] < 0) {
-//			inArray[k] = 0;
-//		}
-//		else if (inArray[k] > 255) {
-//			inArray[k] = 255;
-//		}
-//		else {
-//			inArray[k] = inArray[k];
-//		}
-//	}
-//}
-
+// pixelsSplitIntoQuarters takes an RGBA image input array and splits it up into separate R, G, B, and A channels
 __global__ void pixelsSplitIntoQuarters(unsigned char* rgbaArray, unsigned char* rArray, unsigned char* gArray, unsigned char* bArray, unsigned char* aArray,
 	int sizeofPixelsPerInputChannel, int numOfThreads)
 {
@@ -87,6 +69,7 @@ __global__ void pixelsSplitIntoQuarters(unsigned char* rgbaArray, unsigned char*
 	}
 }
 
+// pixelsMerge takes the R, G, B arrays and merges them back, and sets the Alpha array values to 255
 __global__ void pixelsMerge(float* outrArray, float* outgArray, float* outbArray, float* outaArray, unsigned char* outfinalArray,
 	int sizeofPixelsPerOutputChannel, int numOfThreads) {
 	for (int i = 0; i < (sizeofPixelsPerOutputChannel / numOfThreads); i++) {
@@ -100,58 +83,51 @@ __global__ void pixelsMerge(float* outrArray, float* outgArray, float* outbArray
 	}
 }
 
-//__global__ void copyArrayKernel(unsigned char* inArray, float* outArray, int sizeofPixelsPerOutputChannel, int numOfThreads) {
-//	for (int i = 0; i < (sizeofPixelsPerOutputChannel / numOfThreads); i++) {
-//		int j = (threadIdx.x + numOfThreads * i) + (blockIdx.x * numOfThreads);
-//		outArray[j] = (float)inArray[j];
-//		if (outArray[j] < 0) {
-//			outArray[j] = 0;
-//		}
-//		else if (outArray[j] > 255) {
-//			outArray[j] = 255;
-//		}
-//	}
-//}
-
 int main(int argc, char* argv[])
 {
-	char* inputImgName = "test.png";
-	char* outImgName = "test_convolve_3.png";
-	int weightMatDim = 3;
-	int numOfThreads = 2049;
+	// Initialize and get the arguments from the command line
+	char* inputImgName;
+	char* outImgName;
+	int weightMatDim;
+	int numOfThreads;
 
-	/*if (argc != 6 || argv[1] == NULL || argv[2] == NULL || argv[3] == NULL || argv[4] == NULL ||
+	if (argc != 5 || argv[1] == NULL || argv[2] == NULL || argv[3] == NULL || argv[4] == NULL ||
 		argv[1] == "-h" || argv[1] == "--help" || argv[1] == "--h") {
-		cout << "Assignment1.exe <Command> <name of input png> <name of output png> < # threads>" << endl;
+		cout << "Lab2.exe <path or name of input png> <path or name of output png> <weight matrix dimension = 3, 5, or 7> <# threads>" << endl;
 		return 0;
 	}
 	else {
+		if (argv[1] != NULL) {
+			inputImgName = argv[1];
+		}
 		if (argv[2] != NULL) {
-			inputImgName = argv[2];
+			outImgName = argv[2];
 		}
 		if (argv[3] != NULL) {
-			outImgName = argv[3];
+			weightMatDim = stoi(argv[3]);
+			if (!(weightMatDim == 3 || weightMatDim == 5 || weightMatDim == 7)) {
+				cout << "The dimension of the weight matrix must be either 3, 5, or 7" << endl;
+				return -1;
+			}
 		}
 		if (argv[4] != NULL) {
 			numOfThreads = stoi(argv[4]);
+			if (numOfThreads <= 0) {
+				cout << "The number of threads needs to be greater than 0" << endl;
+				return -1;
+			}
 		}
-	}*/
-
-	/*if (argv[1] != NULL && !strcmp(argv[1], "rectify")) {
-		cout << "Rectifing" << endl;
-		cudaError_t status = imageRectificationWithCuda(numOfThreads, inputImgName, outImgName);
 	}
 
-	if (argv[1] != NULL && !strcmp(argv[1], "pool")) {
-		cout << "Pooling" << endl;
-		cudaError_t status = imagePoolingWithCuda(numOfThreads, inputImgName, outImgName);
-	}*/
+	cout << "Name of Input Image File: " << inputImgName << endl;
+	cout << "Name of Output Image File: " << outImgName << endl;
+	cout << "Dimension of Weight Matrix: " << weightMatDim << endl;
+	cout << "Number of Threads: " << numOfThreads << endl;
+	cout << "Convolving..." << endl;
 
 	imageConvolutionWithCuda(numOfThreads, weightMatDim, inputImgName, outImgName);
 
-	std::cout << "Name of Input Image File: " << inputImgName << std::endl;
-	std::cout << "Name of Output Image File: " << outImgName << std::endl;
-	std::cout << "Number of Threads: " << numOfThreads << std::endl;
+	cout << "Done!" << endl;
 
 	return 0;
 }
@@ -162,6 +138,7 @@ cudaError_t imageConvolutionWithCuda(int numOfThreads, int weightBoxDim, char* i
 	unsigned char* inputImage = nullptr;
 	unsigned int width, height = 0;
 
+	// Load the input image into CPU memory
 	int error = lodepng_decode32_file(&inputImage, &width, &height, inputImageName);
 	if (error != 0) {
 		cout << "Failed to decode the image" << endl;
@@ -253,6 +230,7 @@ cudaError_t imageConvolutionWithCuda(int numOfThreads, int weightBoxDim, char* i
 		goto Error;
 	}
 
+	// Depending on the weight matrix dimensions, copy over the weight matrix to GPU memory
 	for (int i = 0; i < (weightBoxDim); i++) {
 		for (int j = 0; j < (weightBoxDim); j++) {
 			if (weightBoxDim == 3) {
@@ -273,17 +251,12 @@ cudaError_t imageConvolutionWithCuda(int numOfThreads, int weightBoxDim, char* i
 	gpuTimer.Start();
 	pixelsSplitIntoQuarters << <numBlocks, threadsPerBlock >> > (dev_RGBAArray, dev_RArray, dev_GArray, dev_BArray, dev_AArray, sizeOfArray / 4, threadsPerBlock);
 
-	//Convolution of each array r,g,b,a
+	//Convolution of each array r,g,b - note that the alpha values are left as is
 	convolutionKernel << <numBlocks, threadsPerBlock >> > (dev_RArray, dev_outRArray, dev_wMs, sizeOfOutputArray / 4, threadsPerBlock, width, weightBoxDim);
 
 	convolutionKernel << <numBlocks, threadsPerBlock >> > (dev_GArray, dev_outGArray, dev_wMs, sizeOfOutputArray / 4, threadsPerBlock, width, weightBoxDim);
 
 	convolutionKernel << <numBlocks, threadsPerBlock >> > (dev_BArray, dev_outBArray, dev_wMs, sizeOfOutputArray / 4, threadsPerBlock, width, weightBoxDim);
-
-	//copyArrayKernel << <numBlocks, threadsPerBlock >> > (dev_AArray, dev_outAArray, sizeOfOutputArray / 4, threadsPerBlock);
-	//convolutionKernel << <numBlocks, threadsPerBlock >> > (dev_AArray, dev_outAArray, dev_wMs, sizeOfOutputArray / 4, threadsPerBlock, width, weightBoxDim);
-
-	//pixelsCorrection << <numBlocks, threadsPerBlock >> > (dev_outArray, sizeOfOutputArray, threadsPerBlock);
 
 	pixelsMerge << <numBlocks, threadsPerBlock >> > (dev_outRArray, dev_outGArray, dev_outBArray, dev_outAArray, dev_outArray, sizeOfOutputArray / 4, threadsPerBlock);
 	gpuTimer.Stop();
@@ -305,6 +278,7 @@ cudaError_t imageConvolutionWithCuda(int numOfThreads, int weightBoxDim, char* i
 		goto Error;
 	}
 
+	// Save the output image directly from the GPU memory
 	error = lodepng_encode32_file(outputImageName, dev_outArray, (width - (weightBoxDim - 1)), (height - (weightBoxDim - 1)));
 	if (error != 0) {
 		cout << "Failed to encode the image" << endl;
