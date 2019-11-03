@@ -158,7 +158,7 @@ int main(int argc, char* argv[])
 
 cudaError_t imageConvolutionWithCuda(int numOfThreads, int weightBoxDim, char* inputImageName, char* outputImageName) {
 	cudaError_t cudaStatus = cudaError_t::cudaErrorDeviceUninitilialized;
-	//GpuTimer gpuTimer; // Struct for timing the GPU
+	GpuTimer gpuTimer; // Struct for timing the GPU
 	unsigned char* inputImage = nullptr;
 	unsigned int width, height = 0;
 
@@ -172,7 +172,7 @@ cudaError_t imageConvolutionWithCuda(int numOfThreads, int weightBoxDim, char* i
 	int sizeOfArray = width * height * 4;
 	int sizeOfOutputArray = (width - (weightBoxDim - 1)) * (height - (weightBoxDim - 1)) * 4;
 
-	unsigned char* dev_RGBAArray, * dev_RArray, * dev_GArray, * dev_BArray, * dev_AArray, * dev_outArray;
+	unsigned char* dev_RGBAArray, * dev_RArray, * dev_GArray, * dev_BArray, * dev_AArray, * dev_outArray; 
 	float* dev_outRArray, * dev_outGArray, * dev_outBArray, * dev_outAArray, * dev_wMs;
 
 	// Choose which GPU to run on, change this on a multi-GPU system.
@@ -270,7 +270,7 @@ cudaError_t imageConvolutionWithCuda(int numOfThreads, int weightBoxDim, char* i
 	int numBlocks = ((numOfThreads + (MAX_NUMBER_THREADS - 1)) / MAX_NUMBER_THREADS);
 	int threadsPerBlock = ((numOfThreads + (numBlocks - 1)) / numBlocks);
 	/*************************************** Parrallel Part of Execution **********************************************/
-	//gpuTimer.Start();
+	gpuTimer.Start();
 	pixelsSplitIntoQuarters << <numBlocks, threadsPerBlock >> > (dev_RGBAArray, dev_RArray, dev_GArray, dev_BArray, dev_AArray, sizeOfArray / 4, threadsPerBlock);
 
 	//Convolution of each array r,g,b,a
@@ -286,9 +286,9 @@ cudaError_t imageConvolutionWithCuda(int numOfThreads, int weightBoxDim, char* i
 	//pixelsCorrection << <numBlocks, threadsPerBlock >> > (dev_outArray, sizeOfOutputArray, threadsPerBlock);
 
 	pixelsMerge << <numBlocks, threadsPerBlock >> > (dev_outRArray, dev_outGArray, dev_outBArray, dev_outAArray, dev_outArray, sizeOfOutputArray / 4, threadsPerBlock);
-	//gpuTimer.Stop();
+	gpuTimer.Stop();
 	/*****************************************************************************************************************/
-	//printf("-- Number of Threads: %d -- Execution Time (ms): %g \n", numOfThreads, gpuTimer.Elapsed());
+	printf("-- Number of Threads: %d -- Execution Time (ms): %g \n", numOfThreads, gpuTimer.Elapsed());
 
 	// Check for any errors launching the kernel
 	cudaStatus = cudaGetLastError();
