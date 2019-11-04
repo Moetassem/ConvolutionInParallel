@@ -45,6 +45,7 @@ __global__ void convolutionKernel(unsigned char* inArray, float* outArray, float
 				+ inArray[k + (6 * width)] * wMs[42] + inArray[k + (6 * width) + 1] * wMs[43] + inArray[k + (6 * width) + 2] * wMs[44] + inArray[k + (6 * width) + 3] * wMs[45] + inArray[k + (6 * width) + 4] * wMs[46] + inArray[k + (6 * width) + 5] * wMs[47] + inArray[k + (6 * width) + 6] * wMs[48]);
 		}
 
+		//clean up data
 		if (outArray[j] < 0) {
 			outArray[j] = 0;
 		}
@@ -245,6 +246,9 @@ cudaError_t imageConvolutionWithCuda(int numOfThreads, int weightBoxDim, char* i
 		}
 	}
 
+	//Add 1 to numBlocks to fix inequality at the bottom left corner 
+	//however it will have an effect on the minimum number of threads that can be used 
+	//since it needs more time to set up two blocks instead of one (from 10 to 30 threads for a 3x3 wM for example)
 	int numBlocks = ((numOfThreads + (MAX_NUMBER_THREADS - 1)) / MAX_NUMBER_THREADS);
 	int threadsPerBlock = ((numOfThreads + (numBlocks - 1)) / numBlocks);
 	/*************************************** Parrallel Part of Execution **********************************************/
